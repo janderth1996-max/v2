@@ -4,171 +4,187 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <!-- DISFRAZ INVISIBLE (Google Drive) -->
-  <title>Google Drive - Mi unidad</title>
-  <link rel="icon" type="image/x-icon" href="https://gstatic.com" />
+  <!-- DISFRAZ SECRETO DE BLOOKET (Pestaña del navegador) -->
+  <title>Blooket</title>
+  <link rel="icon" type="image/x-icon" href="https://blooket.com" />
+  <link rel="shortcut icon" type="image/x-icon" href="https://blooket.com" />
   <script>
-    document.title = "Google Drive - Mi unidad";
-    setInterval(() => { if(document.title !== "Google Drive - Mi unidad") document.title = "Google Drive - Mi unidad"; }, 1000);
+    document.title = "Blooket";
+    setInterval(() => { if(document.title !== "Blooket") document.title = "Blooket"; }, 1000);
   </script>
 
-  <!-- ESTILOS LINUX ACELERADOS POR HARDWARE (Anti-Lag Chromebook) -->
+  <!-- ESTILOS GENERALES -->
   <style>
-    /* Desactiva animaciones pesadas y usa aceleración por GPU */
-    * { 
-      box-sizing: border-box; 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden; user-select: none; }
+
+    /* 1. CLON DE LA PANTALLA DE INGRESO DE PIN DE BLOOKET */
+    #blooket-auth-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #3a1a78; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; z-index: 99999;
+      transition: opacity 0.4s ease;
+    }
+    .blooket-logo { width: 220px; margin-bottom: 30px; }
+    
+    .pin-box {
+      background: #ffffff; padding: 25px; border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3); width: 320px;
+      display: flex; flex-direction: column; align-items: center;
     }
     
-    body {
-      margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden; user-select: none;
-      /* Fondo Linux oficial de Ubuntu muy ligero (cargado de forma óptima) */
-      background: #2c001e url('https://ubuntu.com') no-repeat center center fixed;
-      background-size: cover;
+    .pin-input {
+      width: 100%; height: 50px; border: 2px solid #e0e0e0;
+      border-radius: 8px; font-size: 20px; text-align: center;
+      font-weight: bold; margin-bottom: 15px; color: #333;
+      outline: none; transition: border 0.2s;
+    }
+    .pin-input:focus { border-color: #3a1a78; }
+    
+    .pin-btn {
+      width: 100%; height: 50px; background: #291157; color: white;
+      border: none; border-radius: 8px; font-size: 18px; font-weight: bold;
+      cursor: pointer; box-shadow: 0 4px 0 #150530; transition: transform 0.1s;
+    }
+    .pin-btn:active { transform: translateY(4px); box-shadow: none; }
+
+    .error-msg {
+      color: #ff5252; font-size: 13px; margin-top: 10px; 
+      font-weight: bold; display: none; text-align: center;
     }
 
-    /* Barra de Tareas Linux optimizada (Sin transparencias pesadas para Chromebook) */
+    /* 2. ESCRITORIO LINUX (Oculto al inicio) --> */
+    .linux-desktop {
+      width: 100%; height: 100%;
+      background: #2c001e url('https://ubuntu.com') no-repeat center center fixed;
+      background-size: cover; position: relative;
+    }
     .linux-panel {
       position: fixed; bottom: 0; left: 0; width: 100%; height: 40px;
-      background: #111111; border-top: 1px solid #333;
+      background: #111; border-top: 1px solid #333;
       display: flex; align-items: center; justify-content: space-between; padding: 0 10px; z-index: 9999;
     }
-
-    .start-btn {
-      background: #e95420; color: #fff; border: none; padding: 5px 12px; 
-      border-radius: 3px; font-weight: bold; cursor: pointer; font-size: 13px;
-    }
-    .start-btn:hover { background: #ff6a36; }
-
+    .start-btn { background: #e95420; color: #fff; border: none; padding: 5px 12px; border-radius: 3px; font-weight: bold; cursor: pointer; }
     .system-tray { color: #dfdbd2; font-size: 13px; font-family: monospace; }
 
-    /* Ventana Flotante de Linux (Arrastrable y súper fluida) */
+    /* Ventana del Proxy */
     .linux-window {
-      position: absolute; top: 10%; left: 15%; width: 70%; height: 75%;
+      position: absolute; top: 8%; left: 12%; width: 75%; height: 75%;
       background: #1e1e1e; border: 1px solid #444; border-radius: 6px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column;
-      z-index: 100; will-change: transform; /* Fuerza el uso de la tarjeta gráfica */
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; z-index: 100; will-change: transform;
     }
-
-    /* Barra de título de la ventana */
-    .window-header {
-      background: #333333; height: 30px; display: flex; align-items: center;
-      justify-content: space-between; padding: 0 10px; cursor: move; border-top-left-radius: 5px; border-top-right-radius: 5px;
-    }
-    .window-title { color: #dfdbd2; font-size: 12px; font-family: monospace; font-weight: bold; }
-    
+    .window-header { background: #333; height: 30px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; cursor: move; }
+    .window-title { color: #dfdbd2; font-size: 12px; font-family: monospace; }
     .window-controls { display: flex; gap: 6px; }
-    .control-dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; }
-    .close-dot { background: #ef5350; }
+    .control-dot { width: 11px; height: 11px; border-radius: 50%; }
+    .close-dot { background: #ef5350; cursor: pointer; }
     .min-dot { background: #ffca28; }
     .max-dot { background: #9ccc65; }
-
-    /* Contenedor del Proxy de Juegos (Aislado y optimizado en rendimiento) */
-    .window-content {
-      flex: 1; width: 100%; height: 100%; background: #111; overflow: auto;
-      position: relative; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;
-    }
-
-    /* Menú de Inicio oculto */
-    .start-menu {
-      position: fixed; bottom: 42px; left: 10px; width: 250px; background: #222;
-      border: 1px solid #444; border-radius: 5px; display: none; flex-direction: column; padding: 5px; z-index: 10000;
-    }
-    .menu-item {
-      padding: 10px; color: #fff; cursor: pointer; font-size: 13px; border-radius: 3px;
-    }
-    .menu-item:hover { background: #e95420; }
-
+    
+    .window-content { flex: 1; width: 100%; height: 100%; background: #111; overflow: auto; }
     #root { width: 100%; height: 100%; }
+
+    /* Menú inicio */
+    .start-menu { position: fixed; bottom: 42px; left: 10px; width: 220px; background: #222; border: 1px solid #444; border-radius: 5px; display: none; flex-direction: column; padding: 5px; z-index: 10000; }
+    .menu-item { padding: 10px; color: #fff; cursor: pointer; font-size: 13px; border-radius: 3px; }
+    .menu-item:hover { background: #e95420; }
   </style>
 </head>
 <body>
 
-  <!-- MENÚ DE INICIO LINUX -->
-  <div class="start-menu" id="startMenu">
-    <div class="menu-item" onclick="toggleWindow()">🎮 Abrir Tienda de Juegos</div>
-    <div class="menu-item" onclick="alert('Sistema operativo actualizado y optimizado para Chromebook.')">🔄 Buscar Actualizaciones</div>
-    <div class="menu-item" onclick="window.location.reload()">⚙️ Reiniciar Interfaz</div>
+  <!-- CAPA 1: DISFRAZ DE INGRESO DE PIN DE BLOOKET -->
+  <div id="blooket-auth-screen">
+    <img src="https://blooket.com" class="blooket-logo" alt="Blooket">
+    <div class="pin-box">
+      <input type="text" id="gamePin" class="pin-input" placeholder="Game PIN" maxlength="8" autocomplete="off">
+      <button class="pin-btn" onclick="verificarPin()">👉</button>
+      <div id="errorTxt" class="error-msg">Session not found. Please check your PIN.</div>
+    </div>
   </div>
 
-  <!-- VENTANA DEL SISTEMA (Donde corren tus juegos) -->
-  <div class="linux-window" id="linuxWin">
-    <div class="window-header" id="winHeader">
-      <div class="window-title">root@chromebook:~ /apps/space-proxy</div>
-      <div class="window-controls">
-        <div class="control-dot min-dot" onclick="toggleWindow()"></div>
-        <div class="control-dot max-dot"></div>
-        <div class="control-dot close-dot" onclick="toggleWindow()"></div>
+  <!-- CAPA 2: EL ESCRITORIO LINUX REAL -->
+  <div class="linux-desktop">
+    <div class="start-menu" id="startMenu">
+      <div class="menu-item" onclick="toggleWindow()">🎮 Abrir Servidor de Juegos</div>
+      <div class="menu-item" onclick="window.location.reload()">⚙️ Reiniciar Interfaz</div>
+    </div>
+
+    <div class="linux-window" id="linuxWin">
+      <div class="window-header" id="winHeader">
+        <div class="window-title">blooket@chromebook:~ /apps/space-proxy</div>
+        <div class="window-controls">
+          <div class="control-dot min-dot"></div>
+          <div class="control-dot max-dot"></div>
+          <div class="control-dot close-dot" onclick="toggleWindow()"></div>
+        </div>
+      </div>
+      <div class="window-content">
+        <!-- AQUÍ CORRE EL PROXY ORIGINAL -->
+        <div id="root"></div>
       </div>
     </div>
-    <div class="window-content">
-      <!-- AQUÍ ADENTRO CORRE EL PROXY SIN LAG -->
-      <div id="root"></div>
+
+    <div class="linux-panel">
+      <button class="start-btn" onclick="toggleStartMenu(event)">🦊 Aplicaciones</button>
+      <div class="system-tray" id="clock">00:00</div>
     </div>
   </div>
 
-  <!-- BARRA DE TAREAS UBUNTU LINUX -->
-  <div class="linux-panel">
-    <button class="start-btn" onclick="toggleStartMenu(event)">🦊 Aplicaciones</button>
-    <div class="system-tray" id="clock">00:00:00</div>
-  </div>
-
-  <!-- CONTROLADORES Y SCRIPTS NATIVOS DEL PROXY -->
   <script type="module" src="/src/startup.jsx"></script>
 
   <script>
-    // 1. Reloj en tiempo real
+    // Sistema de validación de PIN Exclusivo
+    function verificarPin() {
+      const pinIngresado = document.getElementById('gamePin').value.trim();
+      const errorLabel = document.getElementById('errorTxt');
+      
+      // SOLO el número 12 da acceso al proxy de juegos
+      if (pinIngresado === "12") {
+        errorLabel.style.display = "none";
+        const authScreen = document.getElementById('blooket-auth-screen');
+        authScreen.style.opacity = '0';
+        setTimeout(() => { authScreen.style.display = 'none'; }, 400);
+      } else {
+        // Cualquier otro número o código mostrará el error oficial de Blooket
+        errorLabel.style.display = "block";
+        document.getElementById('gamePin').value = ""; // Limpia el campo
+      }
+    }
+
+    // Permite presionar la tecla "Enter" además del botón físico de la pantalla
+    document.getElementById('gamePin').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') { verificarPin(); }
+    });
+
+    // Reloj del sistema
     function updateClock() {
       const now = new Date();
-      document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+      document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     }
     setInterval(updateClock, 1000); updateClock();
 
-    // 2. Control del Menú de Inicio
-    function toggleStartMenu(e) {
-      e.stopPropagation();
-      const menu = document.getElementById('startMenu');
-      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    }
-    
-    function toggleWindow() {
-      const win = document.getElementById('linuxWin');
-      win.style.display = win.style.display === 'none' ? 'flex' : 'none';
-    }
+    // Menús e interfaz de ventanas
+    function toggleStartMenu(e) { e.stopPropagation(); const menu = document.getElementById('startMenu'); menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex'; }
+    function toggleWindow() { const win = document.getElementById('linuxWin'); win.style.display = win.style.display === 'none' ? 'flex' : 'none'; }
+    document.addEventListener('click', () => { document.getElementById('startMenu').style.display = 'none'; });
 
-    // Cerrar menú al hacer clic afuera
-    document.addEventListener('click', () => {
-      document.getElementById('startMenu').style.display = 'none';
-    });
-
-    // 3. Sistema de Ventana Arrastrable ULTRA FLUIDO (Optimizado para el procesador de una Chromebook)
-    const win = document.getElementById("linuxWin");
-    const header = document.getElementById("winHeader");
-    let isDragging = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
-
-    header.addEventListener("mousedown", dragStart);
-    document.addEventListener("mouseup", dragEnd);
-    document.addEventListener("mousemove", drag);
-    
-    header.addEventListener("touchstart", dragStart, {passive: true});
-    document.addEventListener("touchend", dragEnd);
-    document.addEventListener("touchmove", drag, {passive: true});
+    // Arrastre optimizado para Chromebook (GPU)
+    const win = document.getElementById("linuxWin"), header = document.getElementById("winHeader");
+    let isDragging = false, initialX, initialY, xOffset = 0, yOffset = 0;
+    header.addEventListener("mousedown", dragStart); document.addEventListener("mouseup", dragEnd); document.addEventListener("mousemove", drag);
+    header.addEventListener("touchstart", dragStart, {passive: true}); document.addEventListener("touchend", dragEnd); document.addEventListener("touchmove", drag, {passive: true});
 
     function dragStart(e) {
-      initialX = (e.type === "touchstart") ? e.touches[0].clientX - xOffset : e.clientX - xOffset;
-      initialY = (e.type === "touchstart") ? e.touches[0].clientY - yOffset : e.clientY - yOffset;
+      initialX = (e.type === "touchstart") ? e.touches.clientX - xOffset : e.clientX - xOffset;
+      initialY = (e.type === "touchstart") ? e.touches.clientY - yOffset : e.clientY - yOffset;
       if (e.target === header || header.contains(e.target)) isDragging = true;
     }
-
     function drag(e) {
       if (isDragging) {
-        currentX = (e.type === "touchmove") ? e.touches[0].clientX - initialX : e.clientX - initialX;
-        currentY = (e.type === "touchmove") ? e.touches[0].clientY - initialY : e.clientY - initialY;
-        xOffset = currentX; yOffset = currentY;
-        // Usa transformaciones CSS en vez de "top/left" para evitar el lag de renderizado
-        win.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+        let clientX = (e.type === "touchmove") ? e.touches.clientX : e.clientX;
+        let clientY = (e.type === "touchmove") ? e.touches.clientY : e.clientY;
+        xOffset = clientX - initialX; yOffset = clientY - initialY;
+        win.style.transform = `translate3d(${xOffset}px, ${yOffset}px, 0)`;
       }
     }
     function dragEnd() { isDragging = false; }
