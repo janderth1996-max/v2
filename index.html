@@ -1,18 +1,177 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="/public/assets/logo.png" href="" />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
-    </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/startup.jsx"></script>
-    <style>
-      body {
-        background-size: 24px 24px;
-        opacity: 1;
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- DISFRAZ INVISIBLE (Google Drive) -->
+  <title>Google Drive - Mi unidad</title>
+  <link rel="icon" type="image/x-icon" href="https://gstatic.com" />
+  <script>
+    document.title = "Google Drive - Mi unidad";
+    setInterval(() => { if(document.title !== "Google Drive - Mi unidad") document.title = "Google Drive - Mi unidad"; }, 1000);
+  </script>
+
+  <!-- ESTILOS LINUX ACELERADOS POR HARDWARE (Anti-Lag Chromebook) -->
+  <style>
+    /* Desactiva animaciones pesadas y usa aceleración por GPU */
+    * { 
+      box-sizing: border-box; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    
+    body {
+      margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden; user-select: none;
+      /* Fondo Linux oficial de Ubuntu muy ligero (cargado de forma óptima) */
+      background: #2c001e url('https://ubuntu.com') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    /* Barra de Tareas Linux optimizada (Sin transparencias pesadas para Chromebook) */
+    .linux-panel {
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 40px;
+      background: #111111; border-top: 1px solid #333;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 10px; z-index: 9999;
+    }
+
+    .start-btn {
+      background: #e95420; color: #fff; border: none; padding: 5px 12px; 
+      border-radius: 3px; font-weight: bold; cursor: pointer; font-size: 13px;
+    }
+    .start-btn:hover { background: #ff6a36; }
+
+    .system-tray { color: #dfdbd2; font-size: 13px; font-family: monospace; }
+
+    /* Ventana Flotante de Linux (Arrastrable y súper fluida) */
+    .linux-window {
+      position: absolute; top: 10%; left: 15%; width: 70%; height: 75%;
+      background: #1e1e1e; border: 1px solid #444; border-radius: 6px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column;
+      z-index: 100; will-change: transform; /* Fuerza el uso de la tarjeta gráfica */
+    }
+
+    /* Barra de título de la ventana */
+    .window-header {
+      background: #333333; height: 30px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 10px; cursor: move; border-top-left-radius: 5px; border-top-right-radius: 5px;
+    }
+    .window-title { color: #dfdbd2; font-size: 12px; font-family: monospace; font-weight: bold; }
+    
+    .window-controls { display: flex; gap: 6px; }
+    .control-dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; }
+    .close-dot { background: #ef5350; }
+    .min-dot { background: #ffca28; }
+    .max-dot { background: #9ccc65; }
+
+    /* Contenedor del Proxy de Juegos (Aislado y optimizado en rendimiento) */
+    .window-content {
+      flex: 1; width: 100%; height: 100%; background: #111; overflow: auto;
+      position: relative; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;
+    }
+
+    /* Menú de Inicio oculto */
+    .start-menu {
+      position: fixed; bottom: 42px; left: 10px; width: 250px; background: #222;
+      border: 1px solid #444; border-radius: 5px; display: none; flex-direction: column; padding: 5px; z-index: 10000;
+    }
+    .menu-item {
+      padding: 10px; color: #fff; cursor: pointer; font-size: 13px; border-radius: 3px;
+    }
+    .menu-item:hover { background: #e95420; }
+
+    #root { width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+
+  <!-- MENÚ DE INICIO LINUX -->
+  <div class="start-menu" id="startMenu">
+    <div class="menu-item" onclick="toggleWindow()">🎮 Abrir Tienda de Juegos</div>
+    <div class="menu-item" onclick="alert('Sistema operativo actualizado y optimizado para Chromebook.')">🔄 Buscar Actualizaciones</div>
+    <div class="menu-item" onclick="window.location.reload()">⚙️ Reiniciar Interfaz</div>
+  </div>
+
+  <!-- VENTANA DEL SISTEMA (Donde corren tus juegos) -->
+  <div class="linux-window" id="linuxWin">
+    <div class="window-header" id="winHeader">
+      <div class="window-title">root@chromebook:~ /apps/space-proxy</div>
+      <div class="window-controls">
+        <div class="control-dot min-dot" onclick="toggleWindow()"></div>
+        <div class="control-dot max-dot"></div>
+        <div class="control-dot close-dot" onclick="toggleWindow()"></div>
+      </div>
+    </div>
+    <div class="window-content">
+      <!-- AQUÍ ADENTRO CORRE EL PROXY SIN LAG -->
+      <div id="root"></div>
+    </div>
+  </div>
+
+  <!-- BARRA DE TAREAS UBUNTU LINUX -->
+  <div class="linux-panel">
+    <button class="start-btn" onclick="toggleStartMenu(event)">🦊 Aplicaciones</button>
+    <div class="system-tray" id="clock">00:00:00</div>
+  </div>
+
+  <!-- CONTROLADORES Y SCRIPTS NATIVOS DEL PROXY -->
+  <script type="module" src="/src/startup.jsx"></script>
+
+  <script>
+    // 1. Reloj en tiempo real
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    // 2. Control del Menú de Inicio
+    function toggleStartMenu(e) {
+      e.stopPropagation();
+      const menu = document.getElementById('startMenu');
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+    
+    function toggleWindow() {
+      const win = document.getElementById('linuxWin');
+      win.style.display = win.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    // Cerrar menú al hacer clic afuera
+    document.addEventListener('click', () => {
+      document.getElementById('startMenu').style.display = 'none';
+    });
+
+    // 3. Sistema de Ventana Arrastrable ULTRA FLUIDO (Optimizado para el procesador de una Chromebook)
+    const win = document.getElementById("linuxWin");
+    const header = document.getElementById("winHeader");
+    let isDragging = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+
+    header.addEventListener("mousedown", dragStart);
+    document.addEventListener("mouseup", dragEnd);
+    document.addEventListener("mousemove", drag);
+    
+    header.addEventListener("touchstart", dragStart, {passive: true});
+    document.addEventListener("touchend", dragEnd);
+    document.addEventListener("touchmove", drag, {passive: true});
+
+    function dragStart(e) {
+      initialX = (e.type === "touchstart") ? e.touches[0].clientX - xOffset : e.clientX - xOffset;
+      initialY = (e.type === "touchstart") ? e.touches[0].clientY - yOffset : e.clientY - yOffset;
+      if (e.target === header || header.contains(e.target)) isDragging = true;
+    }
+
+    function drag(e) {
+      if (isDragging) {
+        currentX = (e.type === "touchmove") ? e.touches[0].clientX - initialX : e.clientX - initialX;
+        currentY = (e.type === "touchmove") ? e.touches[0].clientY - initialY : e.clientY - initialY;
+        xOffset = currentX; yOffset = currentY;
+        // Usa transformaciones CSS en vez de "top/left" para evitar el lag de renderizado
+        win.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
       }
-    </style>
-  </body>
+    }
+    function dragEnd() { isDragging = false; }
+  </script>
+</body>
 </html>
